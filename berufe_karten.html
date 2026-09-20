@@ -1,0 +1,293 @@
+<title>Berufe-Karten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F2F2F2;
+    --card:#FFFFFF;
+    --navy:#22313F;
+    --gray:#5B6670;
+    --line:#E3E3E3;
+    --coral:#E8542D;
+    --coral-bg:#FDECE6;
+    --green:#3D8B5B;
+    --green-bg:#E9F5EE;
+    --blue:#2E638C;
+    --blue-bg:#E9F0F6;
+    --purple:#6B4C9A;
+    --purple-bg:#F1ECF7;
+    --shadow: 0 10px 30px rgba(34,49,63,0.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#1A2028;
+      --card:#232B36;
+      --navy:#F2F2F2;
+      --gray:#A9B3BD;
+      --line:#333E4A;
+      --coral-bg:#3A241D;
+      --green-bg:#1E3327;
+      --blue-bg:#1E2C39;
+      --purple-bg:#2A2138;
+      --shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1A2028;
+    --card:#232B36;
+    --navy:#F2F2F2;
+    --gray:#A9B3BD;
+    --line:#333E4A;
+    --coral-bg:#3A241D;
+    --green-bg:#1E3327;
+    --blue-bg:#1E2C39;
+    --purple-bg:#2A2138;
+    --shadow: 0 10px 30px rgba(0,0,0,0.4);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--navy);
+    font-family:'Karla',system-ui,sans-serif;
+    padding:0 20px;
+    padding-block:28px 40px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    min-height:100%;
+  }
+  .wrap{width:100%; max-width:520px; display:flex; flex-direction:column; gap:22px;}
+
+  header{text-align:center; display:flex; flex-direction:column; gap:6px;}
+  .eyebrow{
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--coral); font-weight:700;
+  }
+  h1{
+    font-family:'Baloo 2',sans-serif; font-weight:800;
+    font-size:clamp(28px,7vw,38px); margin:0; line-height:1.05;
+  }
+  .sub{color:var(--gray); font-size:15px; margin:0; line-height:1.5;}
+
+  .levels{display:flex; flex-direction:column; gap:12px;}
+  .level-btn{
+    display:flex; align-items:center; gap:14px;
+    border:2px solid var(--line); background:var(--card);
+    border-radius:16px; padding:14px 16px; cursor:pointer;
+    font-family:'Karla',sans-serif; text-align:left;
+    transition:transform .15s ease, border-color .15s ease;
+  }
+  .level-btn:hover{transform:translateY(-2px);}
+  .level-btn:active{transform:translateY(0);}
+  .level-btn.active{border-color:var(--dot);}
+  .stars{font-family:'Baloo 2',sans-serif; font-weight:700; font-size:18px; color:var(--dot); min-width:64px;}
+  .level-text{display:flex; flex-direction:column; gap:2px;}
+  .level-name{font-weight:700; font-size:15px;}
+  .level-desc{font-size:13px; color:var(--gray);}
+  .level-btn[data-level="basis"]{--dot:var(--green);}
+  .level-btn[data-level="mittel"]{--dot:var(--blue);}
+  .level-btn[data-level="profi"]{--dot:var(--purple);}
+
+  .stage{
+    display:none;
+    flex-direction:column; align-items:center; gap:18px;
+  }
+  .stage.show{display:flex;}
+
+  .card-area{
+    perspective:1200px; width:100%; max-width:340px; aspect-ratio:4/5;
+  }
+  .card{
+    position:relative; width:100%; height:100%;
+    transform-style:preserve-3d; transition:transform .55s cubic-bezier(.4,.2,.2,1);
+    cursor:pointer;
+  }
+  .card.flipped{transform:rotateY(180deg);}
+  .face{
+    position:absolute; inset:0; backface-visibility:hidden;
+    border-radius:22px; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center;
+    padding:26px; box-shadow:var(--shadow);
+  }
+  .face.back{
+    background:linear-gradient(155deg, var(--dot), var(--navy));
+    color:#fff;
+  }
+  .face.back .mark{font-family:'Baloo 2',sans-serif; font-weight:800; font-size:15px; letter-spacing:.08em; text-transform:uppercase; opacity:.85;}
+  .face.back .stars-big{font-size:42px; margin-top:10px;}
+  .face.back .hint{margin-top:16px; font-size:13px; opacity:.8;}
+  .face.front{
+    background:var(--face-bg); color:var(--navy); transform:rotateY(180deg);
+    border:2px solid var(--dot);
+  }
+  .face.front .kicker{font-size:12px; text-transform:uppercase; letter-spacing:.1em; font-weight:700; color:var(--dot);}
+  .face.front .job{font-family:'Baloo 2',sans-serif; font-weight:700; font-size:clamp(20px,6vw,26px); margin-top:10px; line-height:1.25;}
+
+  .stage-actions{display:flex; gap:10px; width:100%; max-width:340px;}
+  button.primary, button.ghost{
+    flex:1; font-family:'Karla',sans-serif; font-weight:700; font-size:14px;
+    padding:13px 10px; border-radius:12px; cursor:pointer; border:none;
+  }
+  button.primary{background:var(--dot); color:#fff;}
+  button.ghost{background:transparent; border:2px solid var(--line); color:var(--navy);}
+  button.primary:disabled{opacity:.5; cursor:not-allowed;}
+
+  .progress{font-size:12px; color:var(--gray); text-align:center;}
+  .back-link{
+    background:none; border:none; color:var(--gray); font-size:13px;
+    text-decoration:underline; cursor:pointer; padding:4px;
+  }
+  footer{text-align:center; color:var(--gray); font-size:12px; margin-top:6px;}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Warm-up · Kapitel 2</div>
+    <h1>Berufe-Karten</h1>
+    <p class="sub">Wählt euer Niveau, zieht eine Karte und stellt den Beruf pantomimisch dar. Die anderen raten: „Ich glaube, du bist …“</p>
+  </header>
+
+  <section class="levels" id="levels">
+    <button class="level-btn" data-level="basis">
+      <span class="stars">★</span>
+      <span class="level-text">
+        <span class="level-name">bekannt</span>
+        <span class="level-desc">Berufe, die ihr schon kennt</span>
+      </span>
+    </button>
+    <button class="level-btn" data-level="mittel">
+      <span class="stars">★★</span>
+      <span class="level-text">
+        <span class="level-name">neu (Kapitel 2)</span>
+        <span class="level-desc">neue Berufe aus dem Kapitel</span>
+      </span>
+    </button>
+    <button class="level-btn" data-level="profi">
+      <span class="stars">★★★</span>
+      <span class="level-text">
+        <span class="level-name">eigene Idee</span>
+        <span class="level-desc">denkt euch selbst einen Beruf aus</span>
+      </span>
+    </button>
+  </section>
+
+  <section class="stage" id="stage">
+    <button class="back-link" id="backBtn">← anderes Niveau wählen</button>
+    <div class="card-area">
+      <div class="card" id="card">
+        <div class="face back">
+          <div class="mark">Karte ziehen</div>
+          <div class="stars-big" id="backStars">★</div>
+          <div class="hint">Tippen zum Aufdecken</div>
+        </div>
+        <div class="face front">
+          <div class="kicker" id="frontKicker">Beruf</div>
+          <div class="job" id="frontJob">—</div>
+        </div>
+      </div>
+    </div>
+    <div class="stage-actions">
+      <button class="ghost" id="flipBtn">Karte aufdecken</button>
+      <button class="primary" id="nextBtn">Nächste Karte</button>
+    </div>
+    <div class="progress" id="progress"></div>
+  </section>
+
+  <footer>Kontext B2.1 · Kapitel 2 · digitale Berufskarten</footer>
+</div>
+
+<script>
+(function(){
+  var DECKS = {
+    basis: {
+      dot: 'var(--green)', bg: 'var(--green-bg)', kicker: 'Beruf',
+      items: ['der Koch / die Köchin','der/die Lehrer/in','der/die Busfahrer/in','der/die Verkäufer/in','der/die Kellner/in']
+    },
+    mittel: {
+      dot: 'var(--blue)', bg: 'var(--blue-bg)', kicker: 'Beruf',
+      items: ['der/die Eventmanager/in','der/die Sozialpädagoge / -pädagogin','der/die Sicherheitsbeauftragte','der/die Mode-Designer/in','der/die Roboter-Supporter/in']
+    },
+    profi: {
+      dot: 'var(--purple)', bg: 'var(--purple-bg)', kicker: 'Eure Aufgabe',
+      items: ['ein Beruf, den es in 10 Jahren geben könnte …','ein Beruf, den es nur in eurem Heimatland gibt …','euer eigener Traumberuf']
+    }
+  };
+  var STARS = {basis:'★', mittel:'★★', profi:'★★★'};
+
+  var levelsEl = document.getElementById('levels');
+  var stageEl = document.getElementById('stage');
+  var cardEl = document.getElementById('card');
+  var backStars = document.getElementById('backStars');
+  var frontJob = document.getElementById('frontJob');
+  var frontKicker = document.getElementById('frontKicker');
+  var progressEl = document.getElementById('progress');
+  var flipBtn = document.getElementById('flipBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var backBtn = document.getElementById('backBtn');
+
+  var state = { level: null, pool: [], used: [], current: null, flipped: false };
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function startLevel(level){
+    state.level = level;
+    state.pool = shuffle(DECKS[level].items);
+    state.used = [];
+    stageEl.classList.add('show');
+    cardEl.style.setProperty('--dot', DECKS[level].dot);
+    cardEl.style.setProperty('--face-bg', DECKS[level].bg);
+    backStars.textContent = STARS[level];
+    frontKicker.textContent = DECKS[level].kicker;
+    drawCard();
+  }
+
+  function drawCard(){
+    cardEl.classList.remove('flipped');
+    state.flipped = false;
+    if (state.pool.length === 0){
+      state.pool = shuffle(DECKS[state.level].items);
+      state.used = [];
+    }
+    state.current = state.pool.pop();
+    state.used.push(state.current);
+    frontJob.textContent = state.current;
+    updateProgress();
+  }
+
+  function updateProgress(){
+    var total = DECKS[state.level].items.length;
+    var drawn = state.used.length > total ? total : state.used.length;
+    progressEl.textContent = 'Karte ' + drawn + ' von ' + total + (state.pool.length === 0 ? ' — danach beginnt der Stapel neu' : '');
+  }
+
+  function flip(){
+    state.flipped = !state.flipped;
+    cardEl.classList.toggle('flipped', state.flipped);
+  }
+
+  levelsEl.addEventListener('click', function(e){
+    var btn = e.target.closest('.level-btn');
+    if (!btn) return;
+    levelsEl.querySelectorAll('.level-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    startLevel(btn.dataset.level);
+  });
+
+  cardEl.addEventListener('click', flip);
+  flipBtn.addEventListener('click', flip);
+  nextBtn.addEventListener('click', drawCard);
+  backBtn.addEventListener('click', function(){
+    stageEl.classList.remove('show');
+    levelsEl.querySelectorAll('.level-btn').forEach(function(b){ b.classList.remove('active'); });
+  });
+})();
+</script>
