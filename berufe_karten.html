@@ -88,8 +88,8 @@
   }
   .level-btn:hover{transform:translateY(-2px);}
   .level-btn:active{transform:translateY(0);}
-  .level-btn.active{border-color:var(--dot);}
-  .stars{font-family:'Baloo 2',sans-serif; font-weight:700; font-size:18px; color:var(--dot); min-width:64px;}
+  .level-btn.active{border-color:var(--dot, var(--coral));}
+  .stars{font-family:'Baloo 2',sans-serif; font-weight:700; font-size:18px; color:var(--dot, var(--coral)); min-width:64px;}
   .level-text{display:flex; flex-direction:column; gap:2px;}
   .level-name{font-weight:700; font-size:15px;}
   .level-desc{font-size:13px; color:var(--gray);}
@@ -119,7 +119,7 @@
     padding:26px; box-shadow:var(--shadow);
   }
   .face.back{
-    background:linear-gradient(155deg, var(--dot), var(--navy));
+    background:linear-gradient(155deg, var(--dot, var(--coral)), var(--navy));
     color:#fff;
   }
   .face.back .mark{font-family:'Baloo 2',sans-serif; font-weight:800; font-size:15px; letter-spacing:.08em; text-transform:uppercase; opacity:.85;}
@@ -127,9 +127,9 @@
   .face.back .hint{margin-top:16px; font-size:13px; opacity:.8;}
   .face.front{
     background:var(--face-bg); color:var(--navy); transform:rotateY(180deg);
-    border:2px solid var(--dot);
+    border:2px solid var(--dot, var(--coral));
   }
-  .face.front .kicker{font-size:12px; text-transform:uppercase; letter-spacing:.1em; font-weight:700; color:var(--dot);}
+  .face.front .kicker{font-size:12px; text-transform:uppercase; letter-spacing:.1em; font-weight:700; color:var(--dot, var(--coral));}
   .face.front .job{font-family:'Baloo 2',sans-serif; font-weight:700; font-size:clamp(20px,6vw,26px); margin-top:10px; line-height:1.25;}
 
   .stage-actions{display:flex; gap:10px; width:100%; max-width:340px;}
@@ -137,7 +137,7 @@
     flex:1; font-family:'Karla',sans-serif; font-weight:700; font-size:14px;
     padding:13px 10px; border-radius:12px; cursor:pointer; border:none;
   }
-  button.primary{background:var(--dot); color:#fff;}
+  button.primary{background:var(--dot, var(--coral)); color:#fff;}
   button.ghost{background:transparent; border:2px solid var(--line); color:var(--navy);}
   button.primary:disabled{opacity:.5; cursor:not-allowed;}
 
@@ -252,8 +252,8 @@
     state.pool = shuffle(DECKS[level].items);
     state.used = [];
     stageEl.classList.add('show');
-    cardEl.style.setProperty('--dot', DECKS[level].dot);
-    cardEl.style.setProperty('--face-bg', DECKS[level].bg);
+    stageEl.style.setProperty('--dot', DECKS[level].dot);
+    stageEl.style.setProperty('--face-bg', DECKS[level].bg);
     backStars.textContent = STARS[level];
     frontKicker.textContent = DECKS[level].kicker;
     drawCard();
